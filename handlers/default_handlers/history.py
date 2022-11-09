@@ -16,7 +16,7 @@ def low_price(message: Message) -> None:
     if user_check:
         show_history(user_id=message.from_user.id)
     else:
-        bot.send_message(message.from_user.id, "Вы еще не отправляли никаких команд.")
+        bot.send_message(message.from_user.id, "You have not sent any commands.")
 
 
 def show_history(user_id: int) -> None:
@@ -39,7 +39,7 @@ def show_history(user_id: int) -> None:
                 sleep(2)
         except (ReadTimeout, ReadTimeoutError):
             sleep(5)
-            bot.send_message(chat_id=user_id, text="Ожидайте. Проблемы с серверами телеграмма.")
+            bot.send_message(chat_id=user_id, text="Please wait. Telegram has flood errors")
         except Exception as e:
             logger.exception(e)
-            bot.send_message(user_id, f"Произошла ошибка. {e}")
+            bot.send_message(user_id, f"An unexpected error occured.\nError: {e}")

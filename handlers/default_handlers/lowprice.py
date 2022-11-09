@@ -9,7 +9,7 @@ def low_price(message: Message):
     logger.info("USER CALLED /LOWPRICE COMMAND")
 
     bot.set_state(message.from_user.id, UserData.city, message.chat.id)
-    bot.send_message(message.from_user.id, text=f"Добрый вечер!\nПожалуйста Отправьте город в котором будет проводиться поиск.")
+    bot.send_message(message.from_user.id, text=f"Good evening!\nPlease enter the city in which you would like to search hotels for.")
     price_object = {"price": {"max": 250, "min": 50}}
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["command"] = "/lowprice"

@@ -28,7 +28,7 @@ class UserData(StatesGroup):
     finalize_results = State()
 @bot.message_handler(state="*", commands=["cancel"])
 def cancel_state(message: Message) -> None:
-    bot.send_message(message.from_user.id, "Можете вводить комманду опять.")
+    bot.send_message(message.from_user.id, "You can enter the command again.")
     bot.set_state(message.from_user.id, None, message.chat.id)
 
 @bot.message_handler(state=UserData.city)
@@ -43,7 +43,7 @@ def city_get(message: Message) -> None:
     city_data = API.unpack_locationv3_json(json_str=location_response.text, city_group=city)
     if city_data:
         markup = Inline().add_buttons(text=city_data["fullName"], callback=city_data["gaiaId"])
-        bot.send_message(chat_id, "Уточните пожалуйста!", reply_markup=markup)
+        bot.send_message(chat_id, "Please be a bit more precise!", reply_markup=markup)
 
     bot.set_state(from_user_id, UserData.date, chat_id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
@@ -56,7 +56,7 @@ def get_date(message: Message) -> None:
     dates = message.text.split()
     check_date = ProcessData.check_dates_validity(dates=dates)
     if not check_date:
-        bot.send_message(message.from_user.id, "Не верный формат даты. Попробуйте еще раз.")
+        bot.send_message(message.from_user.id, "Wrong format of date. Try again.")
         bot.set_state(message.from_user.id, UserData.date, message.chat.id)
 
     # with bot.retrieve_data(message.from_user.id, message.chat.id) as user_data:
@@ -64,10 +64,10 @@ def get_date(message: Message) -> None:
     else:
         ProcessData.save_data(user_id=message.from_user.id, chat_id=message.chat.id, dict_key="date", data=check_date)
         bot.send_message(message.chat.id,
-                         "Отлично. Теперь введите сколько взрослых и комнат для детей нужно."
-                         "\nФормат: Adults Children\n"
-                         "Если больше чем два ребенка разделиите возраст запятой\nПример 1: 2 5,6\n"
-                         "Пример 2:  2 (Без детей)")
+                         "Now, enter how many adults and children are needed."
+                         "\nFormat: Adults Children\n"
+                         "If there are more than two children please split the age by a comma.й\nExample 1: 2 5,6\n"
+                         "Example 2:  2 (No children)")
         bot.set_state(message.from_user.id, UserData.adults_children, message.chat.id)
     # TODO add calendar
 
@@ -81,7 +81,7 @@ def adults_children(message: Message) -> None:
     pattern = r'[A-Za-z]'
     find = search(pattern, message.text)
     if find:
-        bot.send_message(message.from_user.id, "В этом параметре принимаются только цифры и запятые если нужно.\nПопробуйте еще раз.")
+        bot.send_message(message.from_user.id, "This parameter only takes digits and commas.\nTry again.")
         bot.set_state(message.from_user.id, UserData.adults_children, message.chat.id)
     else:
         if len(adults_children_object) == 1:
@@ -95,10 +95,10 @@ def adults_children(message: Message) -> None:
             command  = data["command"]
         if command == "/bestdeal":
             bot.set_state(message.from_user.id, UserData.price, message.chat.id)
-            bot.send_message(message.from_user.id, "Пожалуйста отправьте минимальную и максимальную цену отеля.\nФормат: Мин Макс(50 100)\nОтправьте 0 для пре установленной цены.")
+            bot.send_message(message.from_user.id, "Please enter the minimum and maximum price of the hotel.\nFormat: Min Max(50 100)\nSend 0 for setting the price automatically.")
         else:
-            markup = Inline().add_buttons(text=["Да", "Нет"], callback=["photo_yes", "photo_no"])
-            bot.send_message(message.from_user.id, "Хотите ли выгружать фото?", reply_markup=markup)
+            markup = Inline().add_buttons(text=["Yes", "No"], callback=["photo_yes", "photo_no"])
+            bot.send_message(message.from_user.id, "Would you like to upload photos?", reply_markup=markup)
             bot.set_state(message.from_user.id, UserData.photos, message.chat.id)
         ProcessData.save_data(user_id=message.from_user.id, chat_id=message.chat.id,
                               dict_key="adults_children", data=rooms_object)
@@ -113,7 +113,7 @@ def get_price(message: Message) -> None:
     find = search(pattern, message.text)
     if find:
         bot.send_message(message.from_user.id,
-                         "В этом параметре принимаются только цифры.\nПопробуйте еще раз.")
+                         "This parameter only takes digits.\nTry again.")
         bot.set_state(message.from_user.id, UserData.adults_children, message.chat.id)
     else:
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
@@ -127,7 +127,7 @@ def get_price(message: Message) -> None:
             else:
                 min_price, max_price = message.text.split()
         price_object = {"price": {"max": max_price, "min": min_price}}
-        bot.send_message(chat_id=message.chat.id, text="Введите дистанцию от центра. в км")
+        bot.send_message(chat_id=message.chat.id, text="Please enter the distance from center in miles.")
         bot.set_state(message.from_user.id, UserData.distance, message.chat.id)
         ProcessData.save_data(user_id=message.from_user.id, chat_id=message.chat.id, dict_key="price", data=price_object)
 
@@ -136,20 +136,20 @@ def get_distance(message: Message) -> None:
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["filter"] = f"DISTANCE ({message.text})"
 
-    markup = Inline().add_buttons(text=["Да", "Нет"], callback=["photo_yes", "photo_no"])
-    bot.send_message(message.from_user.id, "Хотите ли выгружать фото?", reply_markup=markup)
+    markup = Inline().add_buttons(text=["Yes", "No"], callback=["photo_yes", "photo_no"])
+    bot.send_message(message.from_user.id, "Would you like to upload photos?", reply_markup=markup)
 @bot.message_handler(state=UserData.photos_amount)
 def photos_amount(message: Message) -> None:
     logger.info("Photos Amount")
     if not message.text.isdigit():
-        bot.send_message(message.from_user.id, "Вы должны ввести только цифры на этом этапе. Попробуйте еще раз.")
+        bot.send_message(message.from_user.id, "This parameter only takes digits.\nTry again.")
         bot.set_state(message.from_user.id, UserData.photos_amount, message.chat.id)
     else:
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
             data["photos_amount"] = int(message.text)
 
-    markup = Reply.add_buttons(text="Начать Поиск")
-    bot.send_message(message.chat.id, text="Начнем?", reply_markup=markup)
+    markup = Reply.add_buttons(text="Start searching")
+    bot.send_message(message.chat.id, text="Start?", reply_markup=markup)
     bot.set_state(message.from_user.id, UserData.api_response, message.chat.id)
 
 @bot.message_handler(state=UserData.api_response)
@@ -170,11 +170,11 @@ def process_data(message: Message) -> None:
         if hotels_founds:
             UserMethods.create_record(user_id=message.from_user.id, user_name=message.from_user.username,
                                command=command, date_of_command=date_of_command, hotel_ids=hotels_founds)
-            bot.send_message(message.chat.id, "Поиск окончен.")
+            bot.send_message(message.chat.id, "The search has finished.")
         # if not detailed_results:
         #     bot.send_message(message.from_user.id, "Похоже, что у сервера сейчас проблема. Пожалуйста, напишите автору бота.")
     else:
-        bot.send_message(message.from_user.id, "Мы не нашли результатов для ваших параметров. || Это сообщение может возникнуть тоже изза проблем с сервером")
+        bot.send_message(message.from_user.id, "We were not able to find results for your parameters. || This message can happen due to server errors as well.")
     bot.set_state(message.from_user.id, None, message.chat.id)
 
 """ BUTTON CALLBACKS"""
@@ -186,7 +186,7 @@ def date_callback(call: CallbackQuery) -> None:
         with bot.retrieve_data(call.from_user.id, call.from_user.id) as data:
             data["city"] = call.data
         bot.send_message(call.from_user.id,
-                         'Теперь, отправьте, дату check in и checkout в отель.\nФормат:  DD/MM/YY DD/MM/YY\nПример: 22/10/22 30/10/22')
+                         'Please enter the date of checking in and checking out to your hotel.\nFormat:  DD/MM/YY DD/MM/YY\nExample: 22/10/22 30/10/22')
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "photo_yes")
@@ -194,7 +194,7 @@ def photos_yes(call: CallbackQuery) -> None:
     logger.info("Photos Yes callback")
     photos = True
     bot.send_message(call.from_user.id,
-                     "Пожалуйста, отправьте количество фото вы хотите выгрузить.\nМаксимум 9 фотографий.")
+                     "Please enter the amount of photos you would like to enter.\nMaximum 9 photos.")
     bot.set_state(call.from_user.id, UserData.photos_amount, call.from_user.id)
     with bot.retrieve_data(call.from_user.id, call.from_user.id) as data:
         data["photos"] = photos
@@ -203,8 +203,8 @@ def photos_yes(call: CallbackQuery) -> None:
 def photos_no(call: CallbackQuery) -> None:
     logger.info("NO PHOTOS CALLBACK")
     photos = False
-    bot.send_message(call.from_user.id,
-                     "Отлично. Пожалуйста, отправьте любую цифру или число для продолжения")
+    markup = Reply.add_buttons(text="Start searching")
+    bot.send_message(call.from_user.id, text="Start?", reply_markup=markup)
     bot.set_state(call.from_user.id, UserData.api_response, call.from_user.id)
     ProcessData.save_data(user_id=call.from_user.id, dict_key="photos_amount", chat_id=call.from_user.id, data=photos)
 
