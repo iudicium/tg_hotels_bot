@@ -39,7 +39,9 @@ Put the key in the .env file.
 Then, go into https://t.me/BotFather or @BotFather
 Create your bot and acquite your api for the telegram bot.
 Put the key in the .env file.
-Your bot is ready to go!
+Install requirments.txt
+and run the bot through main.py
+You're all set!
 
 ```
 
