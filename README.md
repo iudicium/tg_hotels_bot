@@ -1,5 +1,5 @@
 # TELEGRAM HOTELS BOT
-Hello! Currently the project only supports russian, but dont worry an english version will be avaliable soon :)
+A simple bot using the rapid api to find hotels and send them to telegram.
 
 
 Commands:
