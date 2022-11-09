@@ -32,11 +32,11 @@ cancel - completely cancel the command if you have input something wrong
 WHAT TO DO:
 -
 ```
-NAVIGATE HERE:  <h3>https://rapidapi.com/apidojo/api/hotels4/</h3>
+NAVIGATE HERE:  https://rapidapi.com/apidojo/api/hotels4/
 Create an account, subscribe by your plan and acquite the api key
 Put the key in the .env file.
 
-Then, go into <h3>https://t.me/BotFather</h3>  or @BotFather
+Then, go into https://t.me/BotFather  or @BotFather
 Create your bot and acquite your api for the telegram bot.
 Put the key in the .env file.
 Install requirments.txt
