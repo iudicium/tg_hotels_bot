@@ -2,7 +2,6 @@ from typing import Dict
 from database.models import Hotel_Data, db
 from loader import logger
 class HotelData_Methods:
-    # TODO ADD MORE METHODS IF NEEDED
     @staticmethod
     def return_hotel_data(property_id: str) -> Dict:
         logger.info("RETURNING HOTEL DATA")
@@ -35,4 +34,4 @@ class HotelData_Methods:
     def save_hotel_data(hotel_data: Dict) -> None:
         with db:
             Hotel_Data.insert_many([hotel_data]).execute()
-        logger.info("HOTEL EXISTS || NOT SAVING INTO DATABASE")
+        logger.info("SAVING HOTEL INTO DATABASE")

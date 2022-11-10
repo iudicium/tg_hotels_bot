@@ -38,7 +38,7 @@ class ProcessData:
         try:
             find = search(search_param, response.text)
 
-            if find and find != None:
+            if find and find is not None:
                 return find
             raise Exception
         except Exception:
